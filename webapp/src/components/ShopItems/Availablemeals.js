@@ -1,36 +1,61 @@
+import { useEffect, useState } from "react";
 import Card from "../UI/Card";
 import MealItem from "./MealItem/MealItem";
 import classes from "./AvailableMeals.module.css";
 
-const DUMMY_MEALS = [
-  {
-    id: "m1",
-    name: "Sushi",
-    description: "Finest fish and veggies",
-    price: 22.99,
-  },
-  {
-    id: "m2",
-    name: "Schnitzel",
-    description: "A german specialty!",
-    price: 16.5,
-  },
-  {
-    id: "m3",
-    name: "Barbecue Burger",
-    description: "American, raw, meaty",
-    price: 12.99,
-  },
-  {
-    id: "m4",
-    name: "Green Bowl",
-    description: "Healthy...and green...",
-    price: 18.99,
-  },
-];
+// const DUMMY_MEALS = [
+//   {
+//     id: "m1",
+//     name: "Sushi",
+//     description: "Finest fish and veggies",
+//     price: 22.99,
+//   },
+//   {
+//     id: "m2",
+//     name: "Schnitzel",
+//     description: "A german specialty!",
+//     price: 16.5,
+//   },
+//   {
+//     id: "m3",
+//     name: "Barbecue Burger",
+//     description: "American, raw, meaty",
+//     price: 12.99,
+//   },
+//   {
+//     id: "m4",
+//     name: "Green Bowl",
+//     description: "Healthy...and green...",
+//     price: 18.99,
+//   },
+// ];
 
 const AvailableMeals = () => {
-  const mealsList = DUMMY_MEALS.map((meal) => (
+  const [meals, setMeals] = useState([]);
+
+  useEffect(() => {
+    const fetchMeals = async () => {
+      const res = await fetch(
+        "https://react-food-order-app-3c99c-default-rtdb.asia-southeast1.firebasedatabase.app/meals.json"
+      );
+      const resData = await res.json();
+      const loadedMealsData = [];
+
+      for (const key in resData) {
+        loadedMealsData.push({
+          id: key,
+          name: resData[key].name,
+          description: resData[key].description,
+          price: resData[key].price,
+        });
+      }
+
+      setMeals(loadedMealsData);
+    };
+    fetchMeals();
+  }, []);
+
+  const mealsList = meals.map((meal) => (
     <MealItem
       id={meal.id}
       key={meal.id}
